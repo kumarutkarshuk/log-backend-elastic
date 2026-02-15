@@ -1,0 +1,41 @@
+services:
+  app:
+    build: .
+    container_name: log-backend-elastic
+    volumes:
+      - logs:/app/logs
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.12.2
+    user: root
+    volumes:
+      - logs:/app/logs
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+    command: ["filebeat", "-e", "--strict.perms=false"]
+    depends_on:
+      - app
+    env_file:
+      - .env
+
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: appdb
+      POSTGRES_USER: appuser
+      POSTGRES_PASSWORD: apppass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  logs:
+  pgdata:
