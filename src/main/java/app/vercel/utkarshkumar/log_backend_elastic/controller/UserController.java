@@ -20,6 +20,9 @@ public class UserController {
     public String getEmail(@PathVariable Long id) {
 //        User user = userService.getUserById(id);
         User user = userRepository.findById(id).orElse(null);
+        if (user == null) {
+            return "User not found";
+        }
         return user.getEmail().toLowerCase();
     }
 }
