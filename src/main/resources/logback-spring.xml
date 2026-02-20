@@ -8,15 +8,14 @@
             <maxHistory>7</maxHistory>
         </rollingPolicy>
 
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <provider class="net.logstash.logback.composite.GlobalCustomFieldsJsonProvider">
+                <customFields>{"service":"log-backend-elastic"}</customFields>
+            </provider>
+        </encoder>
     </appender>
 
     <root level="INFO">
         <appender-ref ref="FILE_JSON"/>
     </root>
-
-    <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-        <customFields>{"service":"log-backend-elastic"}</customFields>
-    </encoder>
-
 </configuration>
